@@ -7,11 +7,10 @@ import {
 } from "../constants/index.js";
 import AppError from "../utils/AppError.js";
 
-
 class MockService {
   generateUsers(qty = 2) {
     if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
-      throw new AppError("La cantidad debe ser un entero entre 1 y 100", 400);
+      throw new AppError("INVALID_MOCK_QUANTITY");
     }
 
     return Array.from({ length: qty }, () => ({

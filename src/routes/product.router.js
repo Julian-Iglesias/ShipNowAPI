@@ -3,8 +3,8 @@ import productController from "../controllers/product.controller.js";
 
 const router = Router();
 
-router.get("/", (req, res) => productController.getAll(req, res));
-router.get("/:id", (req, res) => productController.getById(req, res));
-router.post("/", (req, res) => productController.create(req, res));
+router.get("/", (req, res, next) => productController.getAll(req, res, next));
+router.get("/:id", (req, res, next) => {productController.getById(req, res, next);});
+router.post("/", (req, res, next) => {productController.create(req, res, next);});
 
 export default router;

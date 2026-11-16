@@ -3,10 +3,10 @@ import mockController from "../controllers/mock.controller.js";
 
 const router = Router();
 
-router.get("/users", (req, res) => mockController.getUsers(req, res));
-router.get("/couriers", (req, res) => mockController.getCouriers(req, res));
-router.get("/orders", (req, res) => mockController.getOrders(req, res));
-router.get("/deliveries", (req, res) => mockController.getDeliveries(req, res));
-router.post("/seed", (req, res) => mockController.seed(req, res));
+router.get("/users", (req, res, next) => {mockController.getUsers(req, res, next)});
+router.get("/couriers", (req, res, next) => {mockController.getCouriers(req, res, next)});
+router.get("/orders", (req, res, next) => {mockController.getOrders(req, res, next)});
+router.get("/deliveries", (req, res, next) => {mockController.getDeliveries(req, res, next)});
+router.post("/seed", (req, res, next) => {mockController.seed(req, res, next)});
 
 export default router;

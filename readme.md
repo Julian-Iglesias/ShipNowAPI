@@ -92,4 +92,34 @@ La respuesta incluye la cantidad de registros insertados en cada categoría.
 
 Se utilizan constantes para los roles, estados y prioridades.
 
-**Nota:** el seed está restringido al entorno de desarrollo. La configuración local de MongoDB standalone no admite transacciones multidocumento, por lo que una falla durante la carga podría dejar registros parciales.
+## Manejo de errores
+
+Se implementó un sistema centralizado de errores utilizando `AppError`, un diccionario de errores y un middleware global de Express.
+
+Los **Services** detectan los errores, los **Controllers** los derivan mediante `next(error)` y el **middleware global** genera respuestas HTTP uniformes.
+
+### Formato de respuesta
+
+```json
+{
+  "status": "error",
+  "code": "USER_NOT_FOUND",
+  "message": "Usuario no encontrado"
+}
+```
+
+### Pruebas en Postman
+
+| Método | Endpoint | HTTP | Error |
+|---|---|---|---|
+| GET | `/api/users/abc` | 400 | INVALID_USER_ID |
+| GET | `/api/products?status=INVALIDO` | 400 | INVALID_PRODUCT_STATUS |
+| GET | `/api/mocks/users?qty=-5` | 400 | INVALID_MOCK_QUANTITY |
+| GET | `/api/mocks/orders?qty=abc` | 400 | INVALID_MOCK_QUANTITY |
+| POST | `/api/mocks/seed?qty=0` | 400 | INVALID_MOCK_QUANTITY |
+
+También se controlan los JSON mal formados (`INVALID_JSON`), los recursos inexistentes (404) y los errores internos (500).
+
+### Errores de MongoDB
+
+El seed solo está permitido en desarrollo (`NODE_ENV=development`). Si falla una inserción, se devuelve `SEED_FAILED` con HTTP 500.

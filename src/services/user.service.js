@@ -9,13 +9,13 @@ class UserService {
 
   async getById(id) {
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
-      throw new AppError("El ID del usuario no es válido", 400);
+      throw new AppError("INVALID_USER_ID");
     }
 
     const user = await userRepository.getById(id);
 
     if (!user) {
-      throw new AppError("Usuario no encontrado", 404);
+      throw new AppError("USER_NOT_FOUND");
     }
 
     return user;
@@ -24,30 +24,25 @@ class UserService {
   async create(userData) {
     const { name, email } = userData ?? {};
 
-    // Validamos el nombre
     if (typeof name !== "string" || !name.trim()) {
-      throw new AppError("El nombre es obligatorio", 400);
+      throw new AppError("INVALID_USER_NAME");
     }
 
-    // Validamos el email
     if (
       typeof email !== "string" ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
     ) {
-      throw new AppError("El email no es válido", 400);
+      throw new AppError("INVALID_USER_EMAIL");
     }
 
-    // Normalizamos el email
     const normalizedEmail = email.trim().toLowerCase();
 
-    // Comprobamos si ya existe
     const existingUser = await userRepository.getByEmail(normalizedEmail);
 
     if (existingUser) {
-      throw new AppError("El email ya está registrado", 409);
+      throw new AppError("DUPLICATE_EMAIL");
     }
 
-    // Creamos el usuario con el rol permitido
     const newUser = {
       name: name.trim(),
       email: normalizedEmail,
@@ -58,7 +53,7 @@ class UserService {
       return await userRepository.create(newUser);
     } catch (error) {
       if (error.code === 11000) {
-        throw new AppError("El email ya está registrado", 409);
+        throw new AppError("DUPLICATE_EMAIL");
       }
 
       throw error;

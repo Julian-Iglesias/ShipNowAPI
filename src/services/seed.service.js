@@ -8,20 +8,23 @@ import AppError from "../utils/AppError.js";
 class SeedService {
   async seed(qty = 2) {
     if (config.nodeEnv !== "development") {
-      throw new AppError(
-        "La carga de prueba solo está permitida en desarrollo",
-        403,
-      );
+      throw new AppError("SEED_FORBIDDEN");
     }
 
     const { users, couriers, orders, deliveries } =
       mockService.generateDeliveries(qty);
 
-    await userRepository.createMany([...users, ...couriers]);
+    try {
+      await userRepository.createMany([...users, ...couriers]);
 
-    await orderRepository.createMany(orders);
+      await orderRepository.createMany(orders);
 
-    await deliveryRepository.createMany(deliveries);
+      await deliveryRepository.createMany(deliveries);
+    } catch (error) {
+      console.error("Error al insertar datos de prueba:", error);
+
+      throw new AppError("SEED_FAILED");
+    }
 
     return {
       inserted: {

@@ -1,82 +1,59 @@
 import mockService from "../services/mock.service.js";
 import seedService from "../services/seed.service.js";
+import { parseMockQuantity } from "../utils/parseMockQuantity.js";
 
 class MockController {
-  async getUsers(req, res) {
+  getUsers(req, res, next) {
     try {
-      const qty = req.query.qty === undefined ? 2 : Number(req.query.qty);
+      const qty = parseMockQuantity(req.query.qty);
 
       const users = mockService.generateUsers(qty);
 
       return res.status(200).json(users);
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-
-      return res.status(statusCode).json({
-        status: "error",
-        message:
-          statusCode === 500 ? "Error interno del servidor" : error.message,
-      });
+      next(error);
     }
   }
 
-  async getCouriers(req, res) {
+  getCouriers(req, res, next) {
     try {
-      const qty = req.query.qty === undefined ? 2 : Number(req.query.qty);
+      const qty = parseMockQuantity(req.query.qty);
 
       const couriers = mockService.generateCouriers(qty);
 
       return res.status(200).json(couriers);
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-
-      return res.status(statusCode).json({
-        status: "error",
-        message:
-          statusCode === 500 ? "Error interno del servidor" : error.message,
-      });
+      next(error);
     }
   }
 
-  async getOrders(req, res) {
+  getOrders(req, res, next) {
     try {
-      const qty = req.query.qty === undefined ? 2 : Number(req.query.qty);
+      const qty = parseMockQuantity(req.query.qty);
 
       const data = mockService.generateOrders(qty);
 
       return res.status(200).json(data);
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-
-      return res.status(statusCode).json({
-        status: "error",
-        message:
-          statusCode === 500 ? "Error interno del servidor" : error.message,
-      });
+      next(error);
     }
   }
 
-  async getDeliveries(req, res) {
+  getDeliveries(req, res, next) {
     try {
-      const qty = req.query.qty === undefined ? 2 : Number(req.query.qty);
+      const qty = parseMockQuantity(req.query.qty);
 
       const data = mockService.generateDeliveries(qty);
 
       return res.status(200).json(data);
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-
-      return res.status(statusCode).json({
-        status: "error",
-        message:
-          statusCode === 500 ? "Error interno del servidor" : error.message,
-      });
+      next(error);
     }
   }
 
-  async seed(req, res) {
+  async seed(req, res, next) {
     try {
-      const qty = req.query.qty === undefined ? 2 : Number(req.query.qty);
+      const qty = parseMockQuantity(req.query.qty);
 
       const result = await seedService.seed(qty);
 
@@ -86,17 +63,7 @@ class MockController {
         data: result,
       });
     } catch (error) {
-      const statusCode = error.statusCode || 500;
-
-      if (statusCode === 500) {
-        console.error("Error al ejecutar seed:", error);
-      }
-
-      return res.status(statusCode).json({
-        status: "error",
-        message:
-          statusCode === 500 ? "Error interno del servidor" : error.message,
-      });
+      next(error);
     }
   }
 }

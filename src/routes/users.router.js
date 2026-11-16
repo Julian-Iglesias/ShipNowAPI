@@ -3,8 +3,8 @@ import userController from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.get("/", (req, res) => userController.getAll(req, res));
-router.get("/:id", (req, res) => userController.getById(req, res));
-router.post("/", (req, res) => userController.create(req, res));
+router.get("/", (req, res, next) => {userController.getAll(req, res, next);});
+router.get("/:id", (req, res, next) => {userController.getById(req, res, next);});
+router.post("/", (req, res, next) => {userController.create(req, res, next);});
 
 export default router;

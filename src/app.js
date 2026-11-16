@@ -3,26 +3,23 @@ import cors from "cors"
 import usersRouter from "./routes/users.router.js"
 import productRouter from "./routes/product.router.js"
 import mockRouter from "./routes/mock.router.js"
-//import storesRouter from "./routes/stores.router.js"
-//import orderRouter from "./routes/order.router.js"
+import AppError from "./utils/AppError.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
+
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
-
 app.use('/api/users', usersRouter)
 app.use("/api/products", productRouter)
 app.use("/api/mocks", mockRouter)
-//app.use('/api/stores', storesRouter)
-//app.use('/api/orders', orderRouter)
 
-app.use((req,res)=>{
-    res.status(404).json({
-        status:'error',
-        message: 'Ruta no encontrada'
-    })
-})
+app.use((req, res, next) => {
+    next(new AppError("ROUTE_NOT_FOUND"));
+});
+
+app.use(errorHandler);
 
 export default app

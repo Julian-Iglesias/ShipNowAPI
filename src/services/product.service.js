@@ -8,7 +8,7 @@ class ProductService {
       filters.status !== undefined &&
       !Object.values(PRODUCT_STATUS).includes(filters.status)
     ) {
-      throw new AppError("Estado de producto inválido", 400);
+      throw new AppError("INVALID_PRODUCT_STATUS");
     }
 
     return productRepository.getAll(filters);
@@ -16,45 +16,44 @@ class ProductService {
 
   async getById(id) {
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {
-      throw new AppError("El ID del producto no es válido", 400);
+      throw new AppError("INVALID_PRODUCT_ID");
     }
 
     const product = await productRepository.getById(id);
 
     if (!product) {
-      throw new AppError("Producto no encontrado", 404);
+      throw new AppError("PRODUCT_NOT_FOUND");
     }
 
     return product;
   }
 
   async create(productData) {
-    const { name, price, stock, description = "" } = productData;
+    const { name, price, stock, description = "" } = productData ?? {};
 
     if (typeof name !== "string" || !name.trim()) {
-      throw new AppError("El nombre del producto es obligatorio", 400);
+      throw new AppError("INVALID_PRODUCT_NAME");
     }
+
     if (typeof price !== "number" || !Number.isFinite(price) || price < 0) {
-      throw new AppError(
-        "El precio debe ser un número válido y no negativo",
-        400,
-      );
+      throw new AppError("INVALID_PRODUCT_PRICE");
     }
 
     if (!Number.isInteger(stock) || stock < 0) {
-      throw new AppError("El stock debe ser un número entero no negativo", 400);
+      throw new AppError("INVALID_PRODUCT_STOCK");
     }
 
     const status =
       stock > 0 ? PRODUCT_STATUS.AVAILABLE : PRODUCT_STATUS.OUT_OF_STOCK;
 
     const newProduct = {
-      name,
+      name: name.trim(),
       description,
       price,
       stock,
       status,
     };
+
     return productRepository.create(newProduct);
   }
 }
