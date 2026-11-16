@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { DELIVERY_STATUS } from "../constants/index.js";
+import fileMetadataSchema from "./fileMetadata.schema.js";
 
 const deliverySchema = new mongoose.Schema(
   {
@@ -25,12 +26,18 @@ const deliverySchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+
+    proofs: {
+      type: [fileMetadataSchema],
+      default: [],
+    },
   },
   {
     timestamps: true,
   },
 );
 
-const Delivery = mongoose.model("Delivery", deliverySchema);
+const Delivery =
+  mongoose.models.Delivery || mongoose.model("Delivery", deliverySchema);
 
 export default Delivery;

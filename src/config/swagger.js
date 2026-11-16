@@ -524,4 +524,165 @@ swaggerSpec.paths["/api/orders/{id}/status"] = {
   },
 };
 
+swaggerSpec.components.schemas.FileMetadata = {
+  type: "object",
+  properties: {
+    _id: { type: "string" },
+    originalName: { type: "string" },
+    storedName: { type: "string" },
+    path: { type: "string" },
+    mimeType: {
+      type: "string",
+      enum: ["application/pdf", "image/jpeg", "image/png"],
+    },
+    size: { type: "integer", maximum: 5242880 },
+    documentType: { type: "string" },
+    uploadedAt: { type: "string", format: "date-time" },
+  },
+};
+
+swaggerSpec.components.schemas.UploadSuccess = {
+  type: "object",
+  properties: {
+    status: { type: "string", example: "success" },
+    message: {
+      type: "string",
+      example: "Archivo cargado correctamente",
+    },
+    data: {
+      type: "object",
+      properties: {
+        entityId: { type: "string" },
+        file: {
+          $ref: "#/components/schemas/FileMetadata",
+        },
+      },
+    },
+  },
+};
+
+const uploadFileProperty = {
+  type: "string",
+  format: "binary",
+  description: "Archivo PDF, JPG o PNG (máximo 5 MB)",
+};
+
+const uploadResponse = {
+  description: "Archivo guardado y asociado correctamente",
+  content: {
+    "application/json": {
+      schema: {
+        $ref: "#/components/schemas/UploadSuccess",
+      },
+    },
+  },
+};
+
+const uploadError = (description) => ({
+  description,
+  content: {
+    "application/json": {
+      schema: {
+        $ref: "#/components/schemas/ErrorResponse",
+      },
+    },
+  },
+});
+
+const uploadIdParameter = {
+  name: "id",
+  in: "path",
+  required: true,
+  description: "ID de MongoDB",
+  schema: { type: "string" },
+};
+
+swaggerSpec.paths["/api/users/{id}/documents"] = {
+  post: {
+    tags: ["Users"],
+    summary: "Subir documento de usuario",
+    description:
+      "Adjunta un documento a un usuario existente y guarda sus metadatos en MongoDB.",
+    parameters: [uploadIdParameter],
+    requestBody: {
+      required: true,
+      content: {
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            required: ["file", "documentType"],
+            properties: {
+              file: uploadFileProperty,
+              documentType: {
+                type: "string",
+                enum: ["DNI", "PASSPORT", "LICENSE"],
+              },
+            },
+          },
+        },
+      },
+    },
+    responses: {
+      201: uploadResponse,
+      400: uploadError(
+        "FILE_REQUIRED, INVALID_FILE_TYPE, INVALID_FILE_FIELD, INVALID_DOCUMENT_TYPE, INVALID_USER_ID o INVALID_UPLOAD_DATA",
+      ),
+      404: uploadError("USER_NOT_FOUND"),
+      413: uploadError("FILE_TOO_LARGE"),
+      500: uploadError("FILE_SAVE_FAILED o INTERNAL_ERROR"),
+    },
+  },
+};
+
+const proofBody = {
+  required: true,
+  content: {
+    "multipart/form-data": {
+      schema: {
+        type: "object",
+        required: ["file"],
+        properties: {
+          file: uploadFileProperty,
+        },
+      },
+    },
+  },
+};
+
+swaggerSpec.paths["/api/orders/{id}/proofs"] = {
+  post: {
+    tags: ["Orders"],
+    summary: "Subir comprobante de pedido",
+    parameters: [uploadIdParameter],
+    requestBody: proofBody,
+    responses: {
+      201: uploadResponse,
+      400: uploadError(
+        "FILE_REQUIRED, INVALID_FILE_TYPE, INVALID_FILE_FIELD, INVALID_ORDER_ID o INVALID_UPLOAD_DATA",
+      ),
+      404: uploadError("ORDER_NOT_FOUND"),
+      413: uploadError("FILE_TOO_LARGE"),
+      500: uploadError("FILE_SAVE_FAILED o INTERNAL_ERROR"),
+    },
+  },
+};
+
+swaggerSpec.paths["/api/deliveries/{id}/proofs"] = {
+  post: {
+    tags: ["Deliveries"],
+    summary: "Subir comprobante de entrega",
+    parameters: [uploadIdParameter],
+    requestBody: proofBody,
+    responses: {
+      201: uploadResponse,
+      400: uploadError(
+        "FILE_REQUIRED, INVALID_FILE_TYPE, INVALID_FILE_FIELD, INVALID_DELIVERY_ID o INVALID_UPLOAD_DATA",
+      ),
+      404: uploadError("DELIVERY_NOT_FOUND"),
+      413: uploadError("FILE_TOO_LARGE"),
+      500: uploadError("FILE_SAVE_FAILED o INTERNAL_ERROR"),
+    },
+  },
+};
+
 export default swaggerSpec;

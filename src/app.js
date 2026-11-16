@@ -9,6 +9,7 @@ import loggerRouter from "./routes/logger.router.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
 import orderRouter from "./routes/order.router.js";
+import fileRouter from "./routes/file.router.js";
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use("/api/mocks", mockRouter)
 app.use("/api/loggerTest", loggerRouter);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/orders", orderRouter);
+app.use("/api", fileRouter);
 
 app.use((req, res, next) => {
     next(new AppError("ROUTE_NOT_FOUND"));

@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: Object.values(PRODUCT_STATUS),
-      required: true,
+      default: PRODUCT_STATUS.AVAILABLE,
     },
   },
   {

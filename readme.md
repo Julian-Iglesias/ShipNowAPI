@@ -214,3 +214,34 @@ Los tests generan y eliminan automáticamente sus datos mediante hooks de Mocha.
 
 **Resultado obtenido:** 33 tests exitosos.
 
+
+## Carga de archivos con Multer
+
+Se implementó la carga de documentos y comprobantes utilizando **Multer**, integrando validaciones, MongoDB, Winston, Swagger y tests funcionales.
+
+### Endpoints
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| POST | `/api/users/:id/documents` | Subir documentos de usuario |
+| POST | `/api/orders/:id/proofs` | Subir comprobantes de pedidos |
+| POST | `/api/deliveries/:id/proofs` | Subir comprobantes de entregas |
+
+### Validaciones y almacenamiento
+
+- Archivos permitidos: PDF, JPG y PNG.
+- Tamaño máximo: 5 MB.
+- Campo de archivo: `file`.
+- Tipos de documento: DNI, PASSPORT y LICENSE.
+- Archivos almacenados en `uploads/`, excluida de Git.
+- MongoDB almacena solamente los metadatos de cada archivo.
+
+### Documentación y testing
+
+Swagger: `http://localhost:8080/api/docs`
+
+Ejecutar pruebas:
+
+`npm test`
+
+**Resultado:** 45 tests funcionales exitosos, incluyendo 12 pruebas de carga de archivos.

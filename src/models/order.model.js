@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-
 import { ORDER_STATUS, ORDER_PRIORITY } from "../constants/index.js";
+import fileMetadataSchema from "./fileMetadata.schema.js";
 
 const orderSchema = new mongoose.Schema(
   {
@@ -32,6 +32,11 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(ORDER_PRIORITY),
       default: ORDER_PRIORITY.MEDIUM,
+    },
+
+    proofs: {
+      type: [fileMetadataSchema],
+      default: [],
     },
   },
   {
