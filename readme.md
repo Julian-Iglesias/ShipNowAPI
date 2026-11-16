@@ -123,3 +123,30 @@ También se controlan los JSON mal formados (`INVALID_JSON`), los recursos inexi
 ### Errores de MongoDB
 
 El seed solo está permitido en desarrollo (`NODE_ENV=development`). Si falla una inserción, se devuelve `SEED_FAILED` con HTTP 500.
+
+## Logging y monitoreo básico
+
+Se implementó un sistema de logging centralizado utilizando **Winston**, integrado con el servidor, MongoDB, el middleware de errores y el módulo de mocks.
+
+### Niveles de logging
+
+- `debug`: información de depuración.
+- `http`: eventos HTTP.
+- `info`: operaciones exitosas.
+- `warning`: advertencias y errores controlados.
+- `error`: errores del servidor.
+- `fatal`: fallas críticas.
+
+En **desarrollo** se registran todos los niveles. En **producción**, solamente `info`, `warning`, `error` y `fatal`.
+
+### Endpoint de prueba
+
+`GET http://localhost:8080/api/loggerTest`
+
+Disponible únicamente en desarrollo. Genera mensajes de los seis niveles para comprobar el funcionamiento del logger.
+
+### Archivos y rotación
+
+Los logs de nivel `error` y `fatal` se guardan en `logs/error-YYYY-MM-DD.log`.
+
+Se configuró rotación diaria, un tamaño máximo de **10 MB** por archivo y una retención de **14 días**.

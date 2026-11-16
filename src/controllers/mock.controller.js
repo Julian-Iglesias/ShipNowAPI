@@ -1,6 +1,7 @@
 import mockService from "../services/mock.service.js";
 import seedService from "../services/seed.service.js";
 import { parseMockQuantity } from "../utils/parseMockQuantity.js";
+import logger from "../config/logger.js";
 
 class MockController {
   getUsers(req, res, next) {
@@ -8,7 +9,7 @@ class MockController {
       const qty = parseMockQuantity(req.query.qty);
 
       const users = mockService.generateUsers(qty);
-
+      logger.debug(`Se generaron ${qty} usuarios mock`);
       return res.status(200).json(users);
     } catch (error) {
       next(error);
@@ -20,6 +21,7 @@ class MockController {
       const qty = parseMockQuantity(req.query.qty);
 
       const couriers = mockService.generateCouriers(qty);
+      logger.debug(`Se generaron ${qty} repartidores mock`);
 
       return res.status(200).json(couriers);
     } catch (error) {
@@ -32,7 +34,7 @@ class MockController {
       const qty = parseMockQuantity(req.query.qty);
 
       const data = mockService.generateOrders(qty);
-
+      logger.debug(`Se generaron ${qty} pedidos mock`);
       return res.status(200).json(data);
     } catch (error) {
       next(error);
@@ -44,7 +46,7 @@ class MockController {
       const qty = parseMockQuantity(req.query.qty);
 
       const data = mockService.generateDeliveries(qty);
-
+      logger.debug(`Se generaron ${qty} entregas mock`);
       return res.status(200).json(data);
     } catch (error) {
       next(error);

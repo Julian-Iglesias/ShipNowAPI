@@ -4,6 +4,7 @@ import orderRepository from "../repositories/order.repository.js";
 import deliveryRepository from "../repositories/delivery.repository.js";
 import config from "../config/env.config.js";
 import AppError from "../utils/AppError.js";
+import logger from "../config/logger.js";
 
 class SeedService {
   async seed(qty = 2) {
@@ -21,10 +22,19 @@ class SeedService {
 
       await deliveryRepository.createMany(deliveries);
     } catch (error) {
-      console.error("Error al insertar datos de prueba:", error);
+      logger.error(
+        `Falló la carga de datos de prueba. Tipo: ${error.name}, código: ${error.code ?? "N/A"}`,
+      );
 
       throw new AppError("SEED_FAILED");
     }
+
+    logger.info(
+      `Seed completado: ${users.length} usuarios, ` +
+        `${couriers.length} repartidores, ` +
+        `${orders.length} pedidos y ` +
+        `${deliveries.length} entregas`,
+    );
 
     return {
       inserted: {
