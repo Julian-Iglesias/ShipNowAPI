@@ -1,7 +1,8 @@
 import express from "express"
 import cors from "cors"
 import usersRouter from "./routes/users.router.js"
-import productRouter from "./routes/product.router.js";
+import productRouter from "./routes/product.router.js"
+import mockRouter from "./routes/mock.router.js"
 //import storesRouter from "./routes/stores.router.js"
 //import orderRouter from "./routes/order.router.js"
 
@@ -12,7 +13,8 @@ app.use(express.json())
 
 
 app.use('/api/users', usersRouter)
-app.use("/api/products", productRouter);
+app.use("/api/products", productRouter)
+app.use("/api/mocks", mockRouter)
 //app.use('/api/stores', storesRouter)
 //app.use('/api/orders', orderRouter)
 

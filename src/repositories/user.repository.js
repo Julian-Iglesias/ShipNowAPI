@@ -16,6 +16,12 @@ class UserRepository {
   async create(userData) {
     return User.create(userData);
   }
+
+  async createMany(usersData) {
+    return User.insertMany(usersData, {
+      ordered: true,
+    });
+  }
 }
 
 export default new UserRepository();
