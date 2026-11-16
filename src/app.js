@@ -6,6 +6,8 @@ import mockRouter from "./routes/mock.router.js"
 import AppError from "./utils/AppError.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import loggerRouter from "./routes/logger.router.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 
 const app = express()
 
@@ -16,6 +18,7 @@ app.use('/api/users', usersRouter)
 app.use("/api/products", productRouter)
 app.use("/api/mocks", mockRouter)
 app.use("/api/loggerTest", loggerRouter);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req, res, next) => {
     next(new AppError("ROUTE_NOT_FOUND"));

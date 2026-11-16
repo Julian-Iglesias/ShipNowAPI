@@ -150,3 +150,30 @@ Disponible únicamente en desarrollo. Genera mensajes de los seis niveles para c
 Los logs de nivel `error` y `fatal` se guardan en `logs/error-YYYY-MM-DD.log`.
 
 Se configuró rotación diaria, un tamaño máximo de **10 MB** por archivo y una retención de **14 días**.
+
+## Documentación con Swagger
+
+Se incorporó documentación interactiva con Swagger UI y OpenAPI 3.0.3.
+
+### Acceso
+
+Iniciar el servidor:
+
+```bash
+npm install
+npm run dev
+```
+
+Abrir en el navegador:
+
+**http://localhost:8080/api/docs**
+
+### Módulos documentados
+
+- **Users:** listado, consulta y creación de usuarios.
+- **Products:** listado, consulta y creación de productos.
+- **Orders y Deliveries:** generación de pedidos y entregas mock.
+- **Mocks:** generación de datos ficticios y carga en MongoDB.
+- **Logger:** endpoint interno para probar Winston.
+
+La documentación incluye parámetros, schemas reutilizables, respuestas exitosas y errores HTTP.
