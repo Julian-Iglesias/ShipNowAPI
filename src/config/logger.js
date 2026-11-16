@@ -1,8 +1,6 @@
-
 import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import config from "./env.config.js";
-
 
 const levels = {
   fatal: 0,
@@ -13,16 +11,14 @@ const levels = {
   debug: 5,
 };
 
-
 const logFormat = winston.format.combine(
   winston.format.timestamp({
     format: "YYYY-MM-DD HH:mm:ss",
   }),
   winston.format.printf(({ timestamp, level, message }) => {
     return `${timestamp} [${level}] ${message}`;
-  })
+  }),
 );
-
 
 const errorFileTransport = new DailyRotateFile({
   dirname: "logs",
@@ -37,7 +33,7 @@ const errorFileTransport = new DailyRotateFile({
 const logger = winston.createLogger({
   levels,
 
-  level: config.nodeEnv === "development" ? "debug" : "info",
+  level: ["development", "test"].includes(config.nodeEnv) ? "debug" : "info",
 
   transports: [
     new winston.transports.Console({

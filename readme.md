@@ -177,3 +177,40 @@ Abrir en el navegador:
 - **Logger:** endpoint interno para probar Winston.
 
 La documentación incluye parámetros, schemas reutilizables, respuestas exitosas y errores HTTP.
+
+
+## Testing funcional
+
+Se implementó una suite de **33 tests automatizados** utilizando Mocha, Chai y Supertest.
+
+### Módulos testeados
+
+- **Users:** listado, creación, consulta y validaciones.
+- **Products:** creación, consulta y manejo de errores.
+- **Orders:** creación, listado, consulta y actualización de estados.
+- **Mocks:** generación de datos ficticios y seed.
+- **Logger y Swagger:** funcionamiento de sus endpoints.
+- **Errores:** validación de códigos HTTP y respuestas uniformes.
+
+### Ejecutar los tests
+
+```bash
+npm test
+```
+
+### Entorno de testing
+
+Se utiliza una base de datos independiente (`shipnow_test`) para evitar modificar los datos de desarrollo.
+
+Variables necesarias en `.env.test`:
+
+```env
+NODE_ENV=test
+PORT=8090
+MONGODB_URI=mongodb://127.0.0.1:27017/shipnow_test
+```
+
+Los tests generan y eliminan automáticamente sus datos mediante hooks de Mocha. Se requiere MongoDB local en funcionamiento.
+
+**Resultado obtenido:** 33 tests exitosos.
+

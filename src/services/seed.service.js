@@ -5,10 +5,18 @@ import deliveryRepository from "../repositories/delivery.repository.js";
 import config from "../config/env.config.js";
 import AppError from "../utils/AppError.js";
 import logger from "../config/logger.js";
+import mongoose from "mongoose";
 
 class SeedService {
   async seed(qty = 2) {
-    if (config.nodeEnv !== "development") {
+    if (!["development", "test"].includes(config.nodeEnv)) {
+      throw new AppError("SEED_FORBIDDEN");
+    }
+
+    if (
+      config.nodeEnv === "test" &&
+      mongoose.connection.name !== "shipnow_test"
+    ) {
       throw new AppError("SEED_FORBIDDEN");
     }
 

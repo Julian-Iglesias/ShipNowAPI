@@ -1,4 +1,3 @@
-
 const ref = (name) => ({
   $ref: `#/components/schemas/${name}`,
 });
@@ -15,8 +14,7 @@ const ok = (schema, description = "Operación exitosa") => ({
   },
 });
 
-const fail = (description) =>
-  ok(ref("ErrorResponse"), description);
+const fail = (description) => ok(ref("ErrorResponse"), description);
 
 const qtyParam = {
   name: "qty",
@@ -330,7 +328,7 @@ swaggerSpec.paths["/api/products"] = {
     responses: {
       201: ok(ref("Product"), "Producto creado"),
       400: fail(
-        "INVALID_PRODUCT_NAME, INVALID_PRODUCT_PRICE, INVALID_PRODUCT_STOCK o INVALID_JSON"
+        "INVALID_PRODUCT_NAME, INVALID_PRODUCT_PRICE, INVALID_PRODUCT_STOCK o INVALID_JSON",
       ),
       500: fail("INTERNAL_ERROR"),
     },
@@ -434,6 +432,93 @@ swaggerSpec.paths["/api/loggerTest"] = {
     responses: {
       200: ok(ref("SuccessResponse"), "Prueba de logger ejecutada"),
       404: fail("ROUTE_NOT_FOUND: entorno distinto de development"),
+      500: fail("INTERNAL_ERROR"),
+    },
+  },
+};
+
+swaggerSpec.components.schemas.CreateOrder = {
+  type: "object",
+  required: ["user", "description", "total"],
+  properties: {
+    user: {
+      type: "string",
+      description: "ID de un usuario existente",
+    },
+    description: {
+      type: "string",
+      example: "Envío de notebook",
+    },
+    total: {
+      type: "number",
+      minimum: 0,
+      example: 25000,
+    },
+    priority: {
+      type: "string",
+      enum: ["LOW", "MEDIUM", "HIGH"],
+      default: "MEDIUM",
+    },
+  },
+};
+
+swaggerSpec.components.schemas.UpdateOrderStatus = {
+  type: "object",
+  required: ["status"],
+  properties: {
+    status: {
+      type: "string",
+      enum: ["PENDING", "IN_TRANSIT", "DELIVERED", "CANCELLED"],
+    },
+  },
+};
+
+swaggerSpec.paths["/api/orders"] = {
+  get: {
+    tags: ["Orders"],
+    summary: "Listar pedidos",
+    responses: {
+      200: ok(arr("Order")),
+      500: fail("INTERNAL_ERROR"),
+    },
+  },
+  post: {
+    tags: ["Orders"],
+    summary: "Crear pedido",
+    requestBody: body("CreateOrder"),
+    responses: {
+      201: ok(ref("Order")),
+      400: fail("INVALID_ORDER_DATA o INVALID_JSON"),
+      404: fail("USER_NOT_FOUND"),
+      500: fail("INTERNAL_ERROR"),
+    },
+  },
+};
+
+swaggerSpec.paths["/api/orders/{id}"] = {
+  get: {
+    tags: ["Orders"],
+    summary: "Consultar pedido por ID",
+    parameters: [idParam],
+    responses: {
+      200: ok(ref("Order")),
+      400: fail("INVALID_ORDER_ID"),
+      404: fail("ORDER_NOT_FOUND"),
+      500: fail("INTERNAL_ERROR"),
+    },
+  },
+};
+
+swaggerSpec.paths["/api/orders/{id}/status"] = {
+  patch: {
+    tags: ["Orders"],
+    summary: "Actualizar estado de pedido",
+    parameters: [idParam],
+    requestBody: body("UpdateOrderStatus"),
+    responses: {
+      200: ok(ref("Order")),
+      400: fail("INVALID_ORDER_ID, INVALID_ORDER_STATUS o INVALID_JSON"),
+      404: fail("ORDER_NOT_FOUND"),
       500: fail("INTERNAL_ERROR"),
     },
   },

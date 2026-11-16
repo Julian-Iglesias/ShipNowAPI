@@ -74,6 +74,21 @@ export const ERROR_DICTIONARY = Object.freeze({
     message: "El cuerpo de la petición contiene un JSON inválido",
   },
 
+  INVALID_ORDER_ID: {
+    statusCode: 400,
+    message: "El ID del pedido no es válido",
+  },
+
+  INVALID_ORDER_DATA: {
+    statusCode: 400,
+    message: "Los datos del pedido no son válidos",
+  },
+
+  INVALID_ORDER_STATUS: {
+    statusCode: 400,
+    message: "El estado del pedido no es válido",
+  },
+
   DUPLICATE_EMAIL: {
     statusCode: 409,
     message: "El email ya está registrado",

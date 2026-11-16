@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import logger from "../config/logger.js";
 import config from "../config/env.config.js";
@@ -8,9 +7,8 @@ const router = Router();
 
 router.get("/", (req, res, next) => {
   try {
-
     // Disponible solamente en desarrollo
-    if (config.nodeEnv !== "development") {
+    if (!["development", "test"].includes(config.nodeEnv)) {
       throw new AppError("ROUTE_NOT_FOUND");
     }
 
@@ -23,9 +21,8 @@ router.get("/", (req, res, next) => {
 
     return res.status(200).json({
       status: "success",
-      message: "Prueba de logger ejecutada correctamente"
+      message: "Prueba de logger ejecutada correctamente",
     });
-
   } catch (error) {
     next(error);
   }
